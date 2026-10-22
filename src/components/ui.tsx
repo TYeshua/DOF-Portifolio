@@ -1,19 +1,74 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { ArrowUpRight, Check, Copy } from 'lucide-react'
 import { copiar } from '../lib/contato'
 
-export function Secao({ id, rotulo, titulo, children }: { id: string; rotulo: string; titulo: string; children: ReactNode }) {
+// Título que sobe palavra por palavra quando entra na tela
+export function TituloRevelado({ texto, className = '' }: { texto: string; className?: string }) {
+  const palavras = texto.split(' ')
   return (
-    <section id={id} aria-labelledby={`${id}-titulo`} className="gutter flex flex-col gap-5 py-12">
-      <header className="revela flex flex-col gap-1">
-        <p className="label text-accent-ink">{rotulo}</p>
-        <h2 id={`${id}-titulo`} className="display text-[1.75rem] font-extrabold leading-tight">
-          {titulo}
+    <span className={`titulo-revelado ${className}`} aria-label={texto}>
+      {palavras.map((p, i) => (
+        <span key={i} aria-hidden className="-mb-[0.18em] inline-block overflow-hidden pb-[0.18em] pt-[0.06em] -mt-[0.06em] align-top">
+          <span className="palavra inline-block" style={{ ['--i' as string]: i }}>
+            {p}
+            {i < palavras.length - 1 ? '\u00a0' : ''}
+          </span>
+        </span>
+      ))}
+    </span>
+  )
+}
+
+export function Secao({ id, rotulo, titulo, children, className = '' }: { id: string; rotulo: string; titulo: string; children: ReactNode; className?: string }) {
+  return (
+    <section id={id} aria-labelledby={`${id}-titulo`} className={`gutter flex flex-col gap-5 py-14 ${className}`}>
+      <header className="revela revela-titulo flex flex-col gap-1.5">
+        <p className="label flex items-center gap-2 text-accent-ink">
+          <span aria-hidden className="traco-rotulo h-px w-6 bg-accent" />
+          {rotulo}
+        </p>
+        <h2 id={`${id}-titulo`} className="display text-[2.15rem] leading-[1.05]">
+          <TituloRevelado texto={titulo} />
         </h2>
       </header>
       {children}
     </section>
   )
+}
+
+// Conta de 0 até o número do texto (ex.: "8 %", "264") quando fica visível
+export function Contador({ valor, ativo = true }: { valor: string; ativo?: boolean }) {
+  const m = valor.match(/^([\d.,]+)(.*)$/)
+  const alvo = m ? Number(m[1].replace(/\./g, '').replace(',', '.')) : NaN
+  const [mostra, setMostra] = useState(Number.isNaN(alvo) ? valor : `0${m?.[2] ?? ''}`)
+  const ref = useRef<HTMLSpanElement>(null)
+  const feito = useRef(false)
+  useEffect(() => {
+    if (Number.isNaN(alvo) || feito.current || !ativo) return
+    const el = ref.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setMostra(valor)
+      return
+    }
+    const obs = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || feito.current) return
+      feito.current = true
+      obs.disconnect()
+      const t0 = performance.now()
+      const dur = 1100
+      const passo = (agora: number) => {
+        const k = Math.min(1, (agora - t0) / dur)
+        const v = Math.round(alvo * (1 - Math.pow(1 - k, 3)))
+        setMostra(`${v.toLocaleString('pt-BR')}${m?.[2] ?? ''}`)
+        if (k < 1) requestAnimationFrame(passo)
+      }
+      requestAnimationFrame(passo)
+    }, { threshold: 0.6 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [alvo, ativo, valor, m])
+  return <span ref={ref}>{mostra}</span>
 }
 
 export function LinkExterno({ href, children }: { href: string; children: ReactNode }) {

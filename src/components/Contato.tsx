@@ -23,7 +23,7 @@ export function Contato() {
         <p className="label" style={{ color: 'var(--accent)' }}>
           Contato
         </p>
-        <h2 id="contato-titulo" className="display -mt-3 text-[2rem] font-extrabold leading-tight">
+        <h2 id="contato-titulo" className="display -mt-3 text-[2rem] leading-tight">
           Vamos conversar
         </h2>
         <p className="text-[0.98rem] leading-relaxed opacity-85">{objetivo}</p>

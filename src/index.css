@@ -78,9 +78,9 @@
   --color-warn: var(--warn);
   --color-panel: var(--panel);
   --color-on-panel: var(--on-panel);
-  --font-display: "Archivo Variable", "Archivo", "Arial Narrow", system-ui, sans-serif;
-  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-display: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Geist Variable", "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
 html { scroll-behavior: smooth; scroll-padding-top: calc(56px + env(safe-area-inset-top, 0px)); }
@@ -94,7 +94,8 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
@@ -112,8 +113,9 @@ body::before {
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
-.display { font-family: var(--font-display); font-variation-settings: "wdth" 112; letter-spacing: -0.01em; }
-.label { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.display { font-family: var(--font-display); font-weight: 480; font-optical-sizing: auto; letter-spacing: -0.022em; }
+.display em, .display i { font-style: italic; font-weight: 400; }
+.label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; }
 h1, h2, h3 { text-wrap: balance; }
 .tabular { font-variant-numeric: tabular-nums; }
 
@@ -173,6 +175,87 @@ input[type="range"]::-moz-range-thumb {
 .cabecalho[data-rolou="true"] { background: color-mix(in oklab, var(--bg) 82%, transparent); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); }
 .indicador { transition: transform 0.55s var(--ease-saida), width 0.55s var(--ease-saida), opacity 0.3s ease; }
 
+/* Abertura */
+.abertura { background: #0b0b0c; color-scheme: dark; }
+.abertura::after { content: ""; position: absolute; inset: auto 0 0 0; height: 2px; background: #ff5500; box-shadow: 0 0 24px 4px rgba(255, 85, 0, 0.55); opacity: 0; }
+@keyframes a-entra { from { opacity: 0; transform: translateY(14px); filter: blur(6px); } }
+.a-item { animation: a-entra 0.9s var(--ease-saida) both; animation-delay: calc(var(--i, 0) * 120ms + 200ms); }
+@keyframes etapa { from { opacity: 0; transform: translateY(6px); } }
+.etapa { animation: etapa 0.4s var(--ease-saida) both; }
+.abertura-ui { transition: opacity 0.45s ease, transform 0.6s var(--ease-saida), filter 0.45s ease; }
+.abertura[data-fase="saindo"] .abertura-ui { opacity: 0; transform: translateY(-16px); filter: blur(8px); }
+@keyframes cortina { to { transform: translateY(-100%); } }
+.abertura[data-fase="saindo"] { animation: cortina 1.05s cubic-bezier(0.77, 0, 0.18, 1) 0.5s forwards; }
+.abertura[data-fase="saindo"]::after { opacity: 1; transition: opacity 0.3s ease 0.45s; }
+.abertura-canvas { transition: transform 1.4s cubic-bezier(0.6, 0, 0.2, 1); }
+.abertura[data-fase="saindo"] .abertura-canvas { transform: scale(1.08); }
+
+/* Entrada do site depois da abertura */
+.site { transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.9s ease, filter 0.9s ease; }
+html.aguardando .site { transform: translateY(40px) scale(0.965); opacity: 0.4; filter: blur(4px); }
+html.aguardando .entra, html.aguardando .traco, html.aguardando .coluna, html.aguardando .lama, html.aguardando .sapata, html.aguardando .broca, html.aguardando .pulso { animation-play-state: paused; }
+html.aguardando .entra { opacity: 0; }
+
+/* Títulos: palavras sobem quando a seção aparece */
+.palavra { transform: translateY(105%); transition: transform 0.9s var(--ease-saida); transition-delay: calc(var(--i, 0) * 70ms); }
+.visto .palavra, html:not(.js-revela) .palavra { transform: none; }
+.traco-rotulo { transform-origin: left; transform: scaleX(0.2); transition: transform 0.9s var(--ease-saida) 0.1s; }
+.visto .traco-rotulo, html:not(.js-revela) .traco-rotulo { transform: none; }
+.js-revela .revela-titulo:not(.visto) { opacity: 1; transform: none; }
+
+/* Pilha de cartões (pesquisa) */
+.pilha-cartao { transform-origin: 50% 0; transform: scale(calc(1 - var(--cobre, 0) * 0.07)); transition: box-shadow 0.4s ease; box-shadow: 0 18px 40px -30px rgba(0, 0, 0, 0.55); }
+.pilha-sombra { opacity: calc(var(--cobre, 0) * 0.28); transition: opacity 0.1s linear; }
+
+/* Carrossel horizontal (projetos pessoais) */
+.carrossel { scroll-padding-inline: 7%; }
+.carrossel-item { transform: scale(calc(1 - var(--ad, 0) * 0.07)) rotate(calc(var(--d, 0) * 1.2deg)); opacity: calc(1 - var(--ad, 0) * 0.45); transition: opacity 0.2s linear; transform-origin: 50% 60%; }
+.palco-tela { opacity: 0; transform: scale(1.04) translateY(6px); transition: opacity 0.55s ease, transform 0.8s var(--ease-saida); }
+.palco-tela.ativa { opacity: 1; transform: none; }
+.palco:active .palco-tela.ativa { transform: scale(0.985); }
+@keyframes avanco { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.avanco { animation: avanco 4.6s linear forwards; }
+@keyframes legenda { from { opacity: 0; transform: translateY(4px); } }
+.legenda { animation: legenda 0.45s var(--ease-saida) both; }
+
+/* Linha do tempo presa com rolagem horizontal */
+.trajetoria { height: calc(100svh + var(--extra, 0px) * 1.25); }
+.trajetoria-palco { top: calc(env(safe-area-inset-top, 0px) + 56px); height: calc(100svh - 56px - env(safe-area-inset-top, 0px)); }
+.trajetoria-trilho { transition: none; }
+.trajetoria-cartao { opacity: calc(0.45 + var(--foco, 1) * 0.55); transform: translateY(calc((1 - var(--foco, 1)) * 18px)) scale(calc(0.94 + var(--foco, 1) * 0.06)); transition: opacity 0.25s linear; }
+.trajetoria-cartao[data-ativo="true"] article { border-color: color-mix(in oklab, var(--accent) 55%, var(--line)); }
+.trajetoria.sem-fixar { height: auto; }
+.trajetoria.sem-fixar .trajetoria-palco { position: static; height: auto; padding-block: 56px; }
+.trajetoria.sem-fixar .trajetoria-trilho { overflow-x: auto; }
+.trajetoria.sem-fixar .dica-rolagem { display: none; }
+
+/* Faixas de competências em movimento */
+.faixa { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+@keyframes faixa { to { transform: translateX(-50%); } }
+.faixa-trilho { animation: faixa var(--dur, 30s) linear infinite; }
+.faixa[data-sentido="volta"] .faixa-trilho { animation-direction: reverse; }
+.faixa:hover .faixa-trilho, .faixa:active .faixa-trilho { animation-play-state: paused; }
+
+/* Onda ao tocar */
+.ripple { position: relative; overflow: hidden; isolation: isolate; }
+@keyframes onda { from { transform: scale(0); opacity: 0.35; } to { transform: scale(1); opacity: 0; } }
+.onda-toque { position: absolute; border-radius: 9999px; background: currentColor; pointer-events: none; animation: onda 0.7s ease-out forwards; z-index: -1; }
+
+/* Paralaxe leve no topo */
+@keyframes sobe-devagar { to { transform: translateY(-36px); } }
+@keyframes sobe-rapido { to { transform: translateY(-90px) scale(0.96); opacity: 0.5; } }
+@supports (animation-timeline: scroll()) {
+  .paralaxe-lenta { animation: sobe-devagar linear both; animation-timeline: scroll(root); animation-range: 0 520px; }
+  .paralaxe-rapida { animation: sobe-rapido linear both; animation-timeline: scroll(root); animation-range: 0 520px; }
+}
+
+/* Folha inferior (demonstrações) */
+.folha-fundo { opacity: 0; transition: opacity 0.35s ease; }
+.folha-painel { transform: translateY(105%); transition: transform 0.55s var(--ease-saida); }
+.folha[data-aberta="true"] .folha-fundo { opacity: 1; }
+.folha[data-aberta="true"] .folha-painel { transform: none; }
+.folha[data-aberta="false"] { pointer-events: none; }
+
 /* Barra lateral de contato */
 .gaveta-fundo { opacity: 0; transition: opacity 0.35s ease; }
 .gaveta-painel { transform: translateX(104%); transition: transform 0.5s var(--ease-saida); }
@@ -209,5 +292,8 @@ input[type="range"]::-moz-range-thumb {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  .faixa-trilho { flex-wrap: wrap; width: auto; }
+  .faixa-item[aria-hidden="true"] { display: none; }
+  .palavra, .traco-rotulo { transform: none; }
   .js-revela .revela:not(.visto) { opacity: 1; transform: none; }
 }

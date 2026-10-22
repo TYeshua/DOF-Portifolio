@@ -1,7 +1,9 @@
 # Portfólio · Thiago Yeshua
 
 Página de uma coluna, feita para ser aberta no celular pelo QR code.
-React + TypeScript + Vite + Tailwind CSS v4. Fontes self-hosted (funciona mesmo com Wi-Fi ruim de congresso).
+React + TypeScript + Vite + Tailwind CSS v4 + three.js. Fontes self-hosted (Fraunces, Geist e Geist Mono), então a página funciona mesmo com Wi-Fi ruim de congresso.
+
+Na primeira visita de cada sessão aparece a abertura em 3D (o poço sendo perfurado). Para ver de novo, abra com `?intro` no fim do endereço.
 
 ## Rodar
 
@@ -35,14 +37,19 @@ src/
   data.ts                 conteúdo
   index.css               cores (claro/escuro) e tipografia
   components/
+    Abertura.tsx          tela de carregamento (texto e números por cima da cena 3D)
     Hero.tsx              topo, botões de contato, destaques
     Navegacao.tsx         menu fixo + barra "Salvar contato" flutuante
-    Projetos.tsx          pesquisa e bolsas (com demonstrações)
-    ProjetosPessoais.tsx  projetos pessoais com telas
-    Galeria.tsx           faixa de telas e visor em tela cheia
+    Projetos.tsx          pesquisa e bolsas em cartões empilhados
+    Folha.tsx             folha que sobe de baixo (demonstrações)
+    ProjetosPessoais.tsx  carrossel horizontal dos projetos pessoais
+    Galeria.tsx           telas do projeto (troca automática) e visor em tela cheia
     DemoPoco.tsx          cálculo didático: volume anular, bottoms-up, hidrostática
     DemoGeoquimica.tsx    faixas de Peters & Cassa (1994) para COT, S2 e IH
-    Trajetoria.tsx
-    Producao.tsx          produção + competências
-    Contato.tsx           contato + rodapé com seletor de tema
+    Trajetoria.tsx        linha do tempo presa que anda para o lado ao rolar
+    Producao.tsx          produção + faixas de competências em movimento
+    Contato.tsx           contato + rodapé
+  lib/
+    cenaPoco.ts           cena three.js da abertura (gêmeo digital do poço)
+    tema.ts               tema claro/escuro do botão do cabeçalho
 ```

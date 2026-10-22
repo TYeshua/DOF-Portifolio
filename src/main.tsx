@@ -1,13 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import '@fontsource-variable/archivo/wdth.css'
-import '@fontsource/ibm-plex-sans/latin-400.css'
-import '@fontsource/ibm-plex-sans/latin-500.css'
-import '@fontsource/ibm-plex-sans/latin-600.css'
-import '@fontsource/ibm-plex-mono/latin-400.css'
-import '@fontsource/ibm-plex-mono/latin-500.css'
+import '@fontsource-variable/fraunces/opsz.css'
+import '@fontsource-variable/fraunces/opsz-italic.css'
+import '@fontsource-variable/geist'
+import '@fontsource-variable/geist-mono'
 import './index.css'
 import App from './App.tsx'
+import { deveMostrarAbertura } from './components/Abertura'
+
+if (deveMostrarAbertura()) document.documentElement.classList.add('aguardando')
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

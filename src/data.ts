@@ -109,6 +109,7 @@ export type Tela = { arquivo: string; legenda: string; formato: 'desktop' | 'cel
 export type ProjetoPessoal = {
   id: string
   titulo: string
+  curto: string
   subtitulo: string
   ano: string
   area: 'Óleo e gás' | 'Energia' | 'Software'
@@ -123,6 +124,7 @@ export type ProjetoPessoal = {
 export const projetosPessoais: ProjetoPessoal[] = [
   {
     id: 'volve',
+    curto: 'Produção',
     titulo: 'Monitoramento e previsão de produção',
     subtitulo: 'Dados reais do campo Volve (Equinor): previsão, sensores virtuais e alertas',
     ano: '2026',
@@ -149,6 +151,7 @@ export const projetosPessoais: ProjetoPessoal[] = [
   },
   {
     id: 'petra',
+    curto: 'Blowout',
     titulo: 'Alerta de blowout em tempo real',
     subtitulo: 'Dados públicos 3W da Petrobras e sensores físicos com Arduino',
     ano: '2026',
@@ -168,6 +171,7 @@ export const projetosPessoais: ProjetoPessoal[] = [
   },
   {
     id: 'beta',
+    curto: 'Poço e custos',
     titulo: 'Projeto de poço e custos de perfuração',
     subtitulo: 'Dimensionamento das fases, poço em 3D e estimativa de custos',
     ano: '2026',
@@ -188,6 +192,7 @@ export const projetosPessoais: ProjetoPessoal[] = [
   },
   {
     id: 'delta',
+    curto: 'Eólica offshore',
     titulo: 'Energia eólica em plataformas offshore',
     subtitulo: 'Dados de vento da NASA, simulação de despacho e emissões evitadas',
     ano: '2025 – 2026',
@@ -207,6 +212,7 @@ export const projetosPessoais: ProjetoPessoal[] = [
   },
   {
     id: 'theta',
+    curto: 'Tarefas',
     titulo: 'Gestão de tarefas para equipes',
     subtitulo: 'Aplicativo web com login, papéis de acesso e banco de dados',
     ano: '2026',

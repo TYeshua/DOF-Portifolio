@@ -120,7 +120,7 @@ export function Navegacao() {
           <a href="#inicio" className="flex min-w-0 items-center gap-2.5" aria-label={`${perfil.nome}, voltar ao início`}>
             <img src={fotoP} alt="" width={34} height={34} className="size-[34px] shrink-0 rounded-full border border-line object-cover" />
             <span className="flex min-w-0 flex-col leading-tight">
-              <span className="display truncate text-[0.98rem] font-extrabold">{perfil.nome}</span>
+              <span className="display truncate text-[0.98rem]">{perfil.nome}</span>
               <span className="truncate font-mono text-[0.68rem] text-muted">Petróleo · UFPA</span>
             </span>
           </a>
@@ -132,7 +132,7 @@ export function Navegacao() {
               onClick={() => setAberta(true)}
               aria-expanded={aberta}
               aria-controls="gaveta"
-              className="flex h-10 items-center gap-2 rounded-full bg-ink pl-3.5 pr-4 text-[0.85rem] font-semibold text-bg transition active:scale-95"
+              className="ripple flex h-10 items-center gap-2 rounded-full bg-ink pl-3.5 pr-4 text-[0.85rem] font-semibold text-bg transition active:scale-95"
             >
               <Menu aria-hidden size={17} />
               Contato
@@ -209,7 +209,7 @@ function Gaveta({ aberta, ativa, aoFechar }: { aberta: boolean; ativa: string; a
           <div className="flex min-w-0 items-center gap-3">
             <img src={fotoP} alt={`Foto de ${perfil.nome}`} width={56} height={56} className="size-14 shrink-0 rounded-full border border-line object-cover" />
             <div className="flex min-w-0 flex-col leading-tight">
-              <span className="display text-[1.1rem] font-extrabold">{perfil.nome}</span>
+              <span className="display text-[1.1rem]">{perfil.nome}</span>
               <span className="text-[0.82rem] text-muted">Eng. de Exploração e Produção de Petróleo · UFPA</span>
             </div>
           </div>

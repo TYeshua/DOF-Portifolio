@@ -39,74 +39,102 @@ function Moldura({ tela, children }: { tela: Tela; children: React.ReactNode }) 
 
 export { transicao }
 
-export function Galeria({ titulo, telas }: { titulo: string; telas: Tela[] }) {
+export function Galeria({ titulo, telas, ativo = true }: { titulo: string; telas: Tela[]; ativo?: boolean }) {
+  const [atual, setAtual] = useState(0)
   const [aberta, setAberta] = useState<number | null>(null)
-  const miniaturas = useRef<(HTMLImageElement | null)[]>([])
+  const [tocou, setTocou] = useState(false)
+  const imgs = useRef<(HTMLImageElement | null)[]>([])
 
   const abrir = (i: number) => {
-    const mini = miniaturas.current[i]
-    if (mini) mini.style.viewTransitionName = 'tela-ampliada'
+    const el = imgs.current[i]
+    if (el) el.style.viewTransitionName = 'tela-ampliada'
     transicao(() => {
-      if (mini) mini.style.viewTransitionName = ''
+      if (el) el.style.viewTransitionName = ''
       setAberta(i)
     })
   }
-
-  const temDesktop = telas.some((t) => t.formato === 'desktop')
-  const altura = (t: Tela) => (t.formato === 'desktop' ? 'h-[188px]' : temDesktop ? 'h-[204px]' : 'h-[300px]')
+  const auto = ativo && !tocou && telas.length > 1 && aberta === null
 
   return (
-    <>
-      <ul className="-mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label={`Telas do ${titulo}`}>
+    <div className="flex flex-col gap-2.5">
+      <button
+        type="button"
+        onClick={() => abrir(atual)}
+        aria-label={`Ampliar: ${telas[atual].legenda}`}
+        className="palco group relative block h-[214px] w-full overflow-hidden rounded-2xl bg-sunken text-left"
+      >
         {telas.map((t, i) => (
-          <li key={t.arquivo} className="shrink-0 snap-start">
-            <button
-              type="button"
-              onClick={() => abrir(i)}
-              className="group relative block w-full text-left transition-transform duration-200 active:scale-[0.98]"
-              aria-label={`Ampliar: ${t.legenda}`}
-            >
-              <Moldura tela={t}>
-                <img
-                  ref={(el) => {
-                    miniaturas.current[i] = el
-                  }}
-                  src={url(`${t.arquivo}-p`)}
-                  alt={t.legenda}
-                  loading="lazy"
-                  decoding="async"
-                  className={`block w-auto max-w-none object-cover object-top ${altura(t)} ${t.formato === 'celular' ? 'aspect-[9/16]' : 'aspect-[16/10]'}`}
-                />
-              </Moldura>
-              <span
-                aria-hidden
-                className="absolute bottom-2 right-2 grid size-7 place-items-center rounded-full bg-panel/80 text-on-panel opacity-90 backdrop-blur transition group-hover:opacity-100"
-              >
-                <Maximize2 size={13} />
-              </span>
-            </button>
-          </li>
+          <div
+            key={t.arquivo}
+            aria-hidden={i !== atual}
+            className={`palco-tela absolute inset-0 flex items-center justify-center p-3 ${i === atual ? 'ativa' : ''}`}
+          >
+            <Moldura tela={t}>
+              <img
+                ref={(el) => {
+                  imgs.current[i] = el
+                }}
+                src={url(`${t.arquivo}-p`)}
+                alt={t.legenda}
+                loading="lazy"
+                decoding="async"
+                className={`block object-cover object-top ${t.formato === 'celular' ? 'h-[174px] w-auto aspect-[9/16]' : 'h-auto w-full aspect-[16/10] max-h-[172px]'}`}
+              />
+            </Moldura>
+          </div>
         ))}
-      </ul>
+        <span aria-hidden className="absolute bottom-2.5 right-2.5 grid size-8 place-items-center rounded-full bg-panel/80 text-on-panel backdrop-blur transition-transform duration-300 group-hover:scale-110">
+          <Maximize2 size={14} />
+        </span>
+      </button>
+      <p key={atual} className="legenda min-h-[2.6em] text-[0.8rem] leading-snug text-muted">{telas[atual].legenda}</p>
+      {telas.length > 1 && (
+        <div className="flex gap-2" role="tablist" aria-label={`Telas do ${titulo}`}>
+          {telas.map((t, i) => (
+            <button
+              key={t.arquivo}
+              type="button"
+              role="tab"
+              aria-selected={i === atual}
+              aria-label={t.legenda}
+              onClick={() => {
+                setTocou(true)
+                setAtual(i)
+              }}
+              className={`miniatura relative h-11 flex-1 overflow-hidden rounded-lg border transition-all duration-300 ${i === atual ? 'border-accent' : 'border-line opacity-60 hover:opacity-100'}`}
+            >
+              <img src={url(`${t.arquivo}-p`)} alt="" loading="lazy" className="size-full object-cover object-top" />
+              {i === atual && auto && (
+                <span
+                  aria-hidden
+                  className="avanco absolute inset-x-0 bottom-0 h-[3px] origin-left bg-accent"
+                  onAnimationEnd={() => setAtual((a) => (a + 1) % telas.length)}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
       {aberta !== null &&
         createPortal(
-        <Visor
-          titulo={titulo}
-          telas={telas}
-          inicio={aberta}
-          aoFechar={(i) => {
-            const mini = miniaturas.current[i]
-            transicao(() => {
-              setAberta(null)
-              if (mini) mini.style.viewTransitionName = 'tela-ampliada'
-            }).then(() => {
-              if (mini) mini.style.viewTransitionName = ''
-            })
-          }}
-        />,
+          <Visor
+            titulo={titulo}
+            telas={telas}
+            inicio={aberta}
+            aoFechar={(i) => {
+              const el = imgs.current[i]
+              transicao(() => {
+                setAberta(null)
+                setAtual(i)
+                if (el) el.style.viewTransitionName = 'tela-ampliada'
+              }).then(() => {
+                if (el) el.style.viewTransitionName = ''
+              })
+            }}
+          />,
           document.body,
         )}
-    </>
+    </div>
   )
 }
 

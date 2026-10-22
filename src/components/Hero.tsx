@@ -65,19 +65,23 @@ export function Hero() {
       </div>
       <div className="flex items-start justify-between gap-4">
         <div className="entra flex min-w-0 flex-col gap-4" style={{ ['--i' as string]: 1 }}>
-          <Retrato />
+          <div className="paralaxe-lenta">
+            <Retrato />
+          </div>
           <div className="flex flex-col gap-1.5">
             <p className="label text-muted">{perfil.curso}</p>
-            <h1 className="display text-[3.1rem] font-extrabold leading-[0.95]">
+            <h1 className="display text-[3.4rem] leading-[0.92]">
               Thiago
               <br />
-              Yeshua
+              <em className="text-accent-ink">Yeshua</em>
             </h1>
             <p className="font-mono text-[0.8rem] text-muted">{perfil.nomeCompleto}</p>
           </div>
         </div>
         <div className="entra" style={{ ['--i' as string]: 1 }}>
-          <EsquemaPoco />
+          <div className="paralaxe-rapida">
+            <EsquemaPoco />
+          </div>
         </div>
       </div>
 
@@ -101,7 +105,7 @@ export function Hero() {
           id="cta-contato"
           href={vcardUrl}
           download
-          className="brilho relative flex min-h-13 items-center justify-center gap-2 overflow-hidden rounded-xl bg-accent px-4 text-[1.02rem] font-semibold text-on-accent transition active:scale-[0.98]"
+          className="brilho ripple relative flex min-h-13 items-center justify-center gap-2 overflow-hidden rounded-xl bg-accent px-4 text-[1.02rem] font-semibold text-on-accent transition active:scale-[0.98]"
         >
           <UserPlus aria-hidden size={20} />
           Salvar meu contato
@@ -119,7 +123,7 @@ export function Hero() {
       <div className="entra grid grid-cols-3 border-y border-line" style={{ ['--i' as string]: 5 }}>
         {destaques.map((d, i) => (
           <div key={d.rotulo} className={`flex min-w-0 flex-col gap-0.5 py-4 ${i > 0 ? 'border-l border-line pl-3' : 'pr-3'}`}>
-            <p className="display text-[1.35rem] font-extrabold leading-none text-accent-ink">{d.valor}</p>
+            <p className="display text-[1.35rem] leading-none text-accent-ink">{d.valor}</p>
             <p className="text-[0.85rem] font-medium leading-snug">{d.rotulo}</p>
             <p className="font-mono text-[0.72rem] leading-snug text-muted">{d.detalhe}</p>
           </div>
