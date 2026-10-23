@@ -18,7 +18,10 @@ export const perfil = {
   email: 'thiagoyeshua01@gmail.com',
   telefone: '+55 91 99132-6639',
   telefoneE164: '+5591991326639',
-  whatsappMsg: 'Olá, Thiago! Vi seu portfólio no congresso e gostaria de conversar.',
+  // Mensagem pronta do WhatsApp. A de QR vale para quem escaneou o código impresso
+  // (link com ?origem=qr); a outra, para quem chegou pelo LinkedIn ou por um link repassado.
+  whatsappMsg: 'Olá, Thiago! Vi seu portfólio e gostaria de conversar.',
+  whatsappMsgQr: 'Olá, Thiago! Vi seu portfólio no congresso e gostaria de conversar.',
   links: {
     linkedin: 'https://www.linkedin.com/in/thiagoyeshua',
     lattes: 'http://lattes.cnpq.br/7788480032641561',

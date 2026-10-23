@@ -1,7 +1,7 @@
 import { Mail, MessageCircle, UserPlus } from 'lucide-react'
 import { objetivo, perfil } from '../data'
 import { mailtoUrl, vcardUrl, whatsappUrl } from '../lib/contato'
-import { BotaoCopiar } from './ui'
+import { BotaoCompartilhar, BotaoCopiar } from './ui'
 
 function Linha({ rotulo, valor }: { rotulo: string; valor: string }) {
   return (
@@ -20,13 +20,10 @@ export function Contato() {
     <section id="contato" aria-labelledby="contato-titulo" className="gutter py-12">
       <div className="flex flex-col gap-5 rounded-3xl border bg-panel p-6 text-on-panel"
         style={{ borderColor: 'var(--panel-line)' }}>
-        <p className="label" style={{ color: 'var(--accent)' }}>
-          Contato
-        </p>
-        <h2 id="contato-titulo" className="display -mt-3 text-[2rem] leading-tight">
+        <h2 id="contato-titulo" className="display text-[2.15rem] leading-tight">
           Vamos conversar
         </h2>
-        <p className="text-[0.98rem] leading-relaxed opacity-85">{objetivo}</p>
+        <p className="justo text-[0.98rem] leading-relaxed opacity-85">{objetivo}</p>
         <div className="flex flex-col">
           <Linha rotulo="E-mail" valor={perfil.email} />
           <Linha rotulo="Telefone e WhatsApp" valor={perfil.telefone} />
@@ -67,7 +64,8 @@ export function Contato() {
 export function Rodape() {
   return (
     <footer className="gutter flex flex-col items-center gap-4 pb-28 pt-2 text-[0.82rem] text-muted">
-      <p>
+      <BotaoCompartilhar className="w-full bg-surface text-ink" />
+      <p className="text-center">
         {perfil.nomeCompleto} · atualizado em {perfil.atualizado}
       </p>
     </footer>

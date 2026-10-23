@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { ArrowUpRight, Check, Copy } from 'lucide-react'
-import { copiar } from '../lib/contato'
+import { ArrowUpRight, Check, Copy, Share2 } from 'lucide-react'
+import { copiar, urlPortfolio } from '../lib/contato'
 
 // Título que sobe palavra por palavra quando entra na tela
 export function TituloRevelado({ texto, className = '' }: { texto: string; className?: string }) {
@@ -19,14 +19,25 @@ export function TituloRevelado({ texto, className = '' }: { texto: string; class
   )
 }
 
-export function Secao({ id, rotulo, titulo, children, className = '' }: { id: string; rotulo: string; titulo: string; children: ReactNode; className?: string }) {
+// Régua da seção: mesmo desenho da linha do topo (nome à esquerda, nota à direita),
+// como o carimbo de uma folha de engenharia.
+export function Regua({ rotulo, nota, className = '' }: { rotulo: string; nota?: string; className?: string }) {
+  return (
+    <p className={`regua flex items-baseline justify-between gap-3 border-b border-line pb-2.5 font-mono text-[0.72rem] text-muted ${className}`}>
+      <span className="flex items-center gap-2">
+        <span aria-hidden className="size-1.5 bg-accent" />
+        {rotulo}
+      </span>
+      {nota && <span className="tabular">{nota}</span>}
+    </p>
+  )
+}
+
+export function Secao({ id, rotulo, nota, titulo, children, className = '' }: { id: string; rotulo: string; nota?: string; titulo: string; children: ReactNode; className?: string }) {
   return (
     <section id={id} aria-labelledby={`${id}-titulo`} className={`gutter flex flex-col gap-5 py-14 ${className}`}>
-      <header className="revela revela-titulo flex flex-col gap-1.5">
-        <p className="label flex items-center gap-2 text-accent-ink">
-          <span aria-hidden className="traco-rotulo h-px w-6 bg-accent" />
-          {rotulo}
-        </p>
+      <header className="revela revela-titulo flex flex-col gap-4">
+        <Regua rotulo={rotulo} nota={nota} />
         <h2 id={`${id}-titulo`} className="display text-[2.15rem] leading-[1.05]">
           <TituloRevelado texto={titulo} />
         </h2>
@@ -82,6 +93,35 @@ export function LinkExterno({ href, children }: { href: string; children: ReactN
       {children}
       <ArrowUpRight aria-hidden size={16} className="text-muted" />
     </a>
+  )
+}
+
+// Abre o menu de compartilhar do celular; sem ele, copia o link.
+export function BotaoCompartilhar({ className = '' }: { className?: string }) {
+  const [copiado, setCopiado] = useState(false)
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        const url = urlPortfolio()
+        if (navigator.share) {
+          try {
+            await navigator.share({ title: 'Thiago Yeshua · Portfólio', text: 'Portfólio de Thiago Yeshua: Engenharia de Petróleo (UFPA), dados e software.', url })
+          } catch {
+            /* a pessoa fechou o menu */
+          }
+          return
+        }
+        if (await copiar(url)) {
+          setCopiado(true)
+          setTimeout(() => setCopiado(false), 2000)
+        }
+      }}
+      className={`flex min-h-11 items-center justify-center gap-2 rounded-xl border border-line px-4 text-[0.92rem] font-medium transition active:scale-[0.98] ${className}`}
+    >
+      {copiado ? <Check aria-hidden size={17} /> : <Share2 aria-hidden size={17} />}
+      <span aria-live="polite">{copiado ? 'Link copiado' : 'Compartilhar portfólio'}</span>
+    </button>
   )
 }
 

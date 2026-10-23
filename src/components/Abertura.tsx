@@ -20,6 +20,9 @@ export function deveMostrarAbertura() {
   if (typeof window === 'undefined') return false
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false
   if (new URLSearchParams(location.search).has('intro')) return true
+  // Em conexão lenta ou com economia de dados, a cena 3D (~560 KB) atrasaria o site: pula.
+  const rede = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection
+  if (rede?.saveData || /2g|3g/.test(rede?.effectiveType ?? '')) return false
   try {
     return sessionStorage.getItem('abertura-vista') !== '1'
   } catch {

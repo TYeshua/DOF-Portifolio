@@ -123,8 +123,7 @@ export function DemoPoco() {
       <Deslizador id="poco-peso" rotulo="Peso do fluido" valor={peso} unidade="ppg" casas={1} min={8.6} max={16} passo={0.1} onChange={setPeso} />
 
       <p className="text-[0.8rem] leading-relaxed text-muted">
-        Poço vertical, sem arrombamento, tubo de 5 in. Fórmulas de campo: capacidade = (D² − d²) / 1029,4 bbl/ft; Ph = 0,052 × peso × TVD. É uma
-        demonstração didática. Não usa o código nem os dados do projeto.
+        Poço vertical, sem arrombamento, tubo de 5 in. Fórmulas de campo: capacidade = (D² − d²) / 1029,4 bbl/ft; Ph = 0,052 × peso × TVD.
       </p>
     </div>
   )

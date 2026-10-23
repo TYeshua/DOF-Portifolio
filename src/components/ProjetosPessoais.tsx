@@ -27,7 +27,7 @@ function Cartao({ p, i, ativo }: { p: ProjetoPessoal; i: number; ativo: boolean 
 
       <Galeria titulo={p.titulo} telas={p.telas} ativo={ativo} />
 
-      <p className="text-[0.95rem] leading-relaxed">{p.resumo}</p>
+      <p className="justo text-[0.95rem] leading-relaxed">{p.resumo}</p>
 
       {p.numeros && (
         <div className="grid grid-cols-3 rounded-xl border border-line">
@@ -119,8 +119,8 @@ export function ProjetosPessoais() {
   }
 
   return (
-    <Secao id="projetos" rotulo={`Projetos pessoais · ${n}`} titulo="Por conta própria">
-      <p className="revela -mt-2 max-w-[38ch] text-[0.97rem] text-muted">
+    <Secao id="projetos" rotulo="Projetos pessoais" nota={`${n} projetos`} titulo="Por conta própria">
+      <p className="justo revela -mt-1 text-[0.97rem] text-muted">
         Feitos fora das bolsas, para aprender e testar ideias de Digital Oilfield. Deslize para o lado.
       </p>
 

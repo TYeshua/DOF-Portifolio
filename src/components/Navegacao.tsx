@@ -5,7 +5,7 @@ import { perfil } from '../data'
 import fotoP from '../assets/foto-p.webp'
 import { mailtoUrl, vcardUrl, whatsappUrl } from '../lib/contato'
 import { definirTema, useTema } from '../lib/tema'
-import { BotaoCopiar } from './ui'
+import { BotaoCompartilhar, BotaoCopiar } from './ui'
 
 export const SECOES = [
   { id: 'pesquisa', rotulo: 'Pesquisa e bolsas' },
@@ -253,6 +253,8 @@ function Gaveta({ aberta, ativa, aoFechar }: { aberta: boolean; ativa: string; a
           ))}
         </ul>
 
+        <BotaoCompartilhar className="g-item mt-4 bg-surface" />
+
         <nav aria-label="Seções" className="g-item mt-6" style={{ ['--i' as string]: 5 }}>
           <p className="label mb-2 text-muted">Nesta página</p>
           <ul className="flex flex-col">
@@ -283,6 +285,7 @@ function Gaveta({ aberta, ativa, aoFechar }: { aberta: boolean; ativa: string; a
 }
 
 // Aparece depois que os botões do topo saem da tela e some na seção de contato.
+// Enquanto a pessoa rola para baixo (lendo), sai do caminho; volta ao rolar para cima.
 export function BarraContato() {
   const [visivel, setVisivel] = useState(false)
   useEffect(() => {
@@ -291,7 +294,17 @@ export function BarraContato() {
     if (!cta || !contato) return
     let ctaFora = false
     let contatoVisivel = false
-    const atualizar = () => setVisivel(ctaFora && !contatoVisivel)
+    let descendo = false
+    let ultimoY = window.scrollY
+    const atualizar = () => setVisivel(ctaFora && !contatoVisivel && !descendo)
+    const aoRolar = () => {
+      const y = window.scrollY
+      if (Math.abs(y - ultimoY) < 10) return
+      descendo = y > ultimoY
+      ultimoY = y
+      atualizar()
+    }
+    window.addEventListener('scroll', aoRolar, { passive: true })
     const obs = new IntersectionObserver((entradas) => {
       entradas.forEach((e) => {
         if (e.target === cta) ctaFora = !e.isIntersecting && e.boundingClientRect.top < 0
@@ -301,7 +314,10 @@ export function BarraContato() {
     })
     obs.observe(cta)
     obs.observe(contato)
-    return () => obs.disconnect()
+    return () => {
+      obs.disconnect()
+      window.removeEventListener('scroll', aoRolar)
+    }
   }, [])
 
   return (

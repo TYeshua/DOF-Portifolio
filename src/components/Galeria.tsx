@@ -43,7 +43,31 @@ export function Galeria({ titulo, telas, ativo = true }: { titulo: string; telas
   const [atual, setAtual] = useState(0)
   const [aberta, setAberta] = useState<number | null>(null)
   const [tocou, setTocou] = useState(false)
+  const [pronto, setPronto] = useState(false)
+  const raiz = useRef<HTMLDivElement>(null)
   const imgs = useRef<(HTMLImageElement | null)[]>([])
+
+  // A troca automática só começa depois que o cartão fica parado na tela por um tempo,
+  // para não mudar a imagem enquanto a pessoa ainda está lendo ou rolando.
+  useEffect(() => {
+    const el = raiz.current
+    if (!el || !ativo || telas.length < 2) return
+    let timer = 0
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        clearTimeout(timer)
+        if (e.isIntersecting) timer = window.setTimeout(() => setPronto(true), 2500)
+        else setPronto(false)
+      },
+      { threshold: 0.6 },
+    )
+    obs.observe(el)
+    return () => {
+      obs.disconnect()
+      clearTimeout(timer)
+      setPronto(false)
+    }
+  }, [ativo, telas.length])
 
   const abrir = (i: number) => {
     const el = imgs.current[i]
@@ -53,10 +77,10 @@ export function Galeria({ titulo, telas, ativo = true }: { titulo: string; telas
       setAberta(i)
     })
   }
-  const auto = ativo && !tocou && telas.length > 1 && aberta === null
+  const auto = ativo && pronto && !tocou && telas.length > 1 && aberta === null
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div ref={raiz} className="flex flex-col gap-2.5">
       <button
         type="button"
         onClick={() => abrir(atual)}

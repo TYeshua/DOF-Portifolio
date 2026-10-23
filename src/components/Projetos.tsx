@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ArrowUpRight, FlaskConical } from 'lucide-react'
+import { ArrowUpRight, FlaskConical, Info } from 'lucide-react'
 import { projetos, type Demo, type Projeto } from '../data'
 import { DemoGeoquimica } from './DemoGeoquimica'
 import { DemoPoco } from './DemoPoco'
@@ -23,7 +23,23 @@ const TITULO_DEMO: Record<Demo, string> = {
 function usePilha(n: number) {
   const refs = useRef<(HTMLElement | null)[]>([])
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    // Em tela baixa (ex.: iPhone SE), um cartão alto preso a 72px do topo teria o fim
+    // coberto pelo próximo antes de ser lido. Nesse caso ele prende mais acima,
+    // com a base visível, e só então o seguinte passa por cima.
+    // clientHeight usa a altura menor da tela (com a barra do navegador visível), que não
+    // muda enquanto a barra some e volta na rolagem; assim os cartões não pulam.
+    const posicionar = () => {
+      const livre = document.documentElement.clientHeight - 16
+      refs.current.forEach((li, i) => {
+        if (!li) return
+        const topo = Math.min(72 + i * 12, livre - li.offsetHeight)
+        li.style.top = `calc(env(safe-area-inset-top, 0px) + ${Math.round(topo)}px)`
+      })
+    }
+    posicionar()
+    window.addEventListener('resize', posicionar)
+    document.fonts?.ready.then(posicionar)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => window.removeEventListener('resize', posicionar)
     let quadro = 0
     const atualizar = () => {
       quadro = 0
@@ -44,6 +60,7 @@ function usePilha(n: number) {
     window.addEventListener('scroll', aoRolar, { passive: true })
     window.addEventListener('resize', aoRolar)
     return () => {
+      window.removeEventListener('resize', posicionar)
       window.removeEventListener('scroll', aoRolar)
       window.removeEventListener('resize', aoRolar)
     }
@@ -57,8 +74,8 @@ export function Projetos() {
   const fechar = useCallback(() => setDemo(null), [])
 
   return (
-    <Secao id="pesquisa" rotulo={`Pesquisa e bolsas · ${projetos.length}`} titulo="Na universidade">
-      <p className="revela -mt-2 max-w-[38ch] text-[0.97rem] text-muted">Trabalhos de iniciação científica e produtos de pesquisa na UFPA.</p>
+    <Secao id="pesquisa" rotulo="Pesquisa e bolsas" nota={`${projetos.length} projetos`} titulo="Na universidade">
+      <p className="justo revela -mt-1 text-[0.97rem] text-muted">Trabalhos de iniciação científica e produtos de pesquisa na UFPA.</p>
       <ol className="flex flex-col gap-5">
         {projetos.map((p, i) => (
           <li
@@ -70,21 +87,16 @@ export function Projetos() {
             style={{ top: `calc(env(safe-area-inset-top, 0px) + ${72 + i * 12}px)`, zIndex: i + 1 }}
           >
             <article className="pilha-cartao relative flex flex-col gap-3 overflow-hidden rounded-[22px] border border-line bg-surface p-5">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.72rem] text-muted">
-                  <span className="inline-flex items-center gap-1.5 text-ink">
-                    <span aria-hidden className={`size-2 rounded-full ${corStatus[p.status]}`} />
-                    {p.status}
-                  </span>
-                  <span>{p.periodo}</span>
-                </div>
-                <span aria-hidden className="display tabular text-[1.5rem] leading-none text-line">
-                  {String(i + 1).padStart(2, '0')}
+              <div className="flex items-center justify-between gap-3 font-mono text-[0.72rem] text-muted">
+                <span className="inline-flex items-center gap-1.5 text-ink">
+                  <span aria-hidden className={`size-2 rounded-full ${corStatus[p.status]}`} />
+                  {p.status}
                 </span>
+                <span className="tabular">{p.periodo}</span>
               </div>
               <h3 className="display text-[1.32rem] leading-[1.15]">{p.titulo}</h3>
               <p className="text-[0.88rem] text-muted">{p.papel}</p>
-              <p className="text-[0.95rem] leading-relaxed">{p.resumo}</p>
+              <p className="justo text-[0.95rem] leading-relaxed">{p.resumo}</p>
               {p.extra && <p className="font-mono text-[0.75rem] text-accent-ink">{p.extra}</p>}
               <ul className="flex flex-wrap gap-1.5" aria-label="Tecnologias">
                 {p.tags.map((t) => (
@@ -97,11 +109,14 @@ export function Projetos() {
                 <button
                   type="button"
                   onClick={() => setDemo(p.demo!)}
-                  className="ripple group mt-1 flex min-h-12 items-center justify-between gap-3 rounded-xl bg-ink px-4 text-left text-[0.92rem] font-medium text-bg transition active:scale-[0.98]"
+                  className="ripple group mt-1 flex min-h-14 items-center justify-between gap-3 rounded-xl bg-ink px-4 py-2.5 text-left text-bg transition active:scale-[0.98]"
                 >
-                  <span className="flex items-center gap-2.5">
-                    <FlaskConical aria-hidden size={17} className="text-accent" />
-                    {TITULO_DEMO[p.demo]}
+                  <span className="flex items-center gap-3">
+                    <FlaskConical aria-hidden size={18} className="shrink-0 text-accent" />
+                    <span className="flex flex-col">
+                      <span className="text-[0.92rem] font-medium leading-snug">{TITULO_DEMO[p.demo]}</span>
+                      <span className="text-[0.76rem] leading-snug opacity-70">Amostra simples · não é o produto final</span>
+                    </span>
                   </span>
                   <ArrowUpRight aria-hidden size={17} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </button>
@@ -112,6 +127,13 @@ export function Projetos() {
         ))}
       </ol>
       <Folha aberta={demo !== null} titulo={demo ? TITULO_DEMO[demo] : ''} aoFechar={fechar}>
+        <p className="mb-5 flex gap-2.5 rounded-xl bg-sunken px-3.5 py-3 text-[0.85rem] leading-snug">
+          <Info aria-hidden size={17} className="mt-px shrink-0 text-accent-ink" />
+          <span className="justo">
+            <strong className="font-semibold">Isto é só uma amostra.</strong> Um exemplo simplificado para mostrar a ideia do projeto, com cálculos
+            básicos. Não é o produto final e não usa o código nem os dados da pesquisa.
+          </span>
+        </p>
         {demo === 'poco' && <DemoPoco />}
         {demo === 'geoquimica' && <DemoGeoquimica />}
       </Folha>

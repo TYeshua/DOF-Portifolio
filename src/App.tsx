@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Abertura, deveMostrarAbertura } from './components/Abertura'
+import { Aviso } from './components/Aviso'
 import { Contato, Rodape } from './components/Contato'
 import { Hero } from './components/Hero'
 import { BarraContato, Navegacao } from './components/Navegacao'
@@ -79,6 +80,7 @@ export default function App() {
         </main>
         <Rodape />
         <BarraContato />
+        <Aviso />
       </div>
     </>
   )

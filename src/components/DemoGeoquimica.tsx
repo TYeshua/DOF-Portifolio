@@ -73,7 +73,7 @@ export function DemoGeoquimica() {
 
   return (
     <div className="flex flex-col gap-5">
-      <p className="text-[0.9rem] text-muted">Valores de exemplo. Mova os controles para classificar uma amostra.</p>
+      <p className="text-[0.9rem] text-muted">Mova os controles para classificar uma rocha com valores de exemplo.</p>
       <Escala id="geo-cot" rotulo="COT" unidade="% em peso" valor={cot} max={8} passo={0.1} casas={1} limites={LIMITES_COT} onChange={setCot} />
       <Escala id="geo-s2" rotulo="S2 (Rock-Eval)" unidade="mg HC/g rocha" valor={s2} max={30} passo={0.5} casas={1} limites={LIMITES_S2} onChange={setS2} />
       <div className="flex items-baseline justify-between gap-3 border-t border-line pt-4">

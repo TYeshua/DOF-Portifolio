@@ -4,16 +4,19 @@ import { destaques, perfil } from '../data'
 import { vcardUrl } from '../lib/contato'
 import { abrirGaveta } from './Navegacao'
 
+// Retrato 4:5 com marcas de canto, como uma figura numa folha técnica
 function Retrato() {
   return (
-    <div className="relative size-[104px] shrink-0">
-      <span aria-hidden className="anel absolute -inset-[5px] rounded-full border border-dashed border-accent/60" />
+    <div className="relative w-37 shrink-0">
+      {['left-[-7px] top-[-7px] border-l border-t', 'right-[-7px] top-[-7px] border-r border-t', 'bottom-[-7px] left-[-7px] border-b border-l', 'bottom-[-7px] right-[-7px] border-b border-r'].map((c) => (
+        <span key={c} aria-hidden className={`absolute size-3 border-accent ${c}`} />
+      ))}
       <img
         src={foto}
         alt={`Foto de ${perfil.nome}`}
-        width={104}
-        height={104}
-        className="relative size-full rounded-full border-2 border-surface object-cover shadow-[0_10px_24px_-14px_rgba(0,0,0,.55)]"
+        width={148}
+        height={185}
+        className="block aspect-4/5 w-full rounded-[10px] bg-sunken object-cover shadow-[0_14px_28px_-18px_rgba(0,0,0,.6)]"
       />
     </div>
   )
@@ -27,7 +30,7 @@ const colunas = [
   { meia: 9, base: 100 },
 ]
 function EsquemaPoco() {
-  const altura = 196
+  const altura = 185
   const y = (p: number) => 8 + (p / 100) * (altura - 16)
   return (
     <svg viewBox={`0 0 88 ${altura}`} width="88" height={altura} aria-hidden className="shrink-0 overflow-visible">
@@ -63,20 +66,9 @@ export function Hero() {
         <span>Portfólio · {perfil.atualizado}</span>
         <span>{perfil.cidade}</span>
       </div>
-      <div className="flex items-start justify-between gap-4">
-        <div className="entra flex min-w-0 flex-col gap-4" style={{ ['--i' as string]: 1 }}>
-          <div className="paralaxe-lenta">
-            <Retrato />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <p className="label text-muted">{perfil.curso}</p>
-            <h1 className="display text-[3.4rem] leading-[0.92]">
-              Thiago
-              <br />
-              <em className="text-accent-ink">Yeshua</em>
-            </h1>
-            <p className="font-mono text-[0.8rem] text-muted">{perfil.nomeCompleto}</p>
-          </div>
+      <div className="flex items-end justify-between gap-4 pt-1.5">
+        <div className="entra paralaxe-lenta" style={{ ['--i' as string]: 1 }}>
+          <Retrato />
         </div>
         <div className="entra" style={{ ['--i' as string]: 1 }}>
           <div className="paralaxe-rapida">
@@ -85,7 +77,15 @@ export function Hero() {
         </div>
       </div>
 
-      <p className="entra max-w-[34ch] text-[1.06rem] leading-relaxed" style={{ ['--i' as string]: 2 }}>{perfil.chamada}</p>
+      <div className="entra flex flex-col gap-2" style={{ ['--i' as string]: 2 }}>
+        <h1 className="display text-[3.6rem] leading-[0.9]">
+          Thiago <em className="text-accent-ink">Yeshua</em>
+        </h1>
+        <p className="font-mono text-[0.78rem] text-muted">{perfil.nomeCompleto}</p>
+        <p className="text-balance text-[0.92rem] leading-snug text-muted">{perfil.curso}</p>
+      </div>
+
+      <p className="justo entra text-[1.06rem] leading-relaxed" style={{ ['--i' as string]: 2 }}>{perfil.chamada}</p>
 
       <ul className="entra flex flex-col gap-2 text-[0.95rem]" style={{ ['--i' as string]: 3 }}>
         {perfil.vinculos.map((v) => (
@@ -96,8 +96,8 @@ export function Hero() {
         ))}
       </ul>
 
-      <div className="entra flex flex-col gap-3" style={{ ['--i' as string]: 4 }}>
-        <p className="inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm">
+      <div className="entra flex flex-col gap-2" style={{ ['--i' as string]: 4 }}>
+        <p className="mb-1 inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm">
           <span aria-hidden className="size-2 rounded-full bg-good" />
           {perfil.disponibilidade}
         </p>
@@ -105,7 +105,7 @@ export function Hero() {
           id="cta-contato"
           href={vcardUrl}
           download
-          className="brilho ripple relative flex min-h-13 items-center justify-center gap-2 overflow-hidden rounded-xl bg-accent px-4 text-[1.02rem] font-semibold text-on-accent transition active:scale-[0.98]"
+          className="ripple relative flex min-h-13 items-center justify-center gap-2 overflow-hidden rounded-xl bg-accent px-4 text-[1.02rem] font-semibold text-on-accent transition active:scale-[0.98]"
         >
           <UserPlus aria-hidden size={20} />
           Salvar meu contato
@@ -113,10 +113,10 @@ export function Hero() {
         <button
           type="button"
           onClick={abrirGaveta}
-          className="flex min-h-12 items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 text-left font-medium transition active:scale-[0.98]"
+          className="group flex min-h-11 w-fit items-center gap-1 self-center text-[0.92rem] font-medium text-muted transition-colors hover:text-ink"
         >
-          <span>WhatsApp, e-mail, LinkedIn e Lattes</span>
-          <ChevronRight aria-hidden size={18} className="text-muted" />
+          WhatsApp, e-mail, LinkedIn e Lattes
+          <ChevronRight aria-hidden size={17} className="transition-transform group-hover:translate-x-0.5" />
         </button>
       </div>
 
