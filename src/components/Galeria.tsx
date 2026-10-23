@@ -39,7 +39,24 @@ function Moldura({ tela, children }: { tela: Tela; children: React.ReactNode }) 
 
 export { transicao }
 
-export function Galeria({ titulo, telas, ativo = true }: { titulo: string; telas: Tela[]; ativo?: boolean }) {
+// Miniatura de uma tela na moldura (celular ou janela), para capas de cartão
+export function Miniatura({ tela, altura }: { tela: Tela; altura: number }) {
+  return (
+    <Moldura tela={tela}>
+      <img
+        src={url(`${tela.arquivo}-p`)}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className={`block object-cover object-top ${tela.formato === 'celular' ? 'aspect-9/16 w-auto' : 'aspect-16/10 h-auto w-full'}`}
+        style={tela.formato === 'celular' ? { height: altura } : { maxHeight: altura }}
+      />
+    </Moldura>
+  )
+}
+
+// altura: altura do palco em px. As telas aparecem na proporção original, sem corte.
+export function Galeria({ titulo, telas, ativo = true, altura = 214 }: { titulo: string; telas: Tela[]; ativo?: boolean; altura?: number }) {
   const [atual, setAtual] = useState(0)
   const [aberta, setAberta] = useState<number | null>(null)
   const [tocou, setTocou] = useState(false)
@@ -85,7 +102,8 @@ export function Galeria({ titulo, telas, ativo = true }: { titulo: string; telas
         type="button"
         onClick={() => abrir(atual)}
         aria-label={`Ampliar: ${telas[atual].legenda}`}
-        className="palco group relative block h-[214px] w-full overflow-hidden rounded-2xl bg-sunken text-left"
+        className="palco group relative block w-full overflow-hidden rounded-2xl bg-sunken text-left"
+        style={{ height: altura }}
       >
         {telas.map((t, i) => (
           <div
@@ -102,7 +120,8 @@ export function Galeria({ titulo, telas, ativo = true }: { titulo: string; telas
                 alt={t.legenda}
                 loading="lazy"
                 decoding="async"
-                className={`block object-cover object-top ${t.formato === 'celular' ? 'h-[174px] w-auto aspect-[9/16]' : 'h-auto w-full aspect-[16/10] max-h-[172px]'}`}
+                className={`block ${t.formato === 'celular' ? 'aspect-9/16 w-auto object-cover object-top' : 'h-auto w-auto max-w-full'}`}
+                style={t.formato === 'celular' ? { height: altura - 40 } : { maxHeight: altura - 42 }}
               />
             </Moldura>
           </div>

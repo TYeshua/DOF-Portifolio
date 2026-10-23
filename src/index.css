@@ -2,7 +2,8 @@
 
 /* Layout: coluna única de leitura (~440px), pensada para quem abre pelo QR code,
    sobre um grid de 28px em laranja (folha de engenharia / malha sísmica).
-   Claro: papel areia do portfólio original. Escuro: preto fosco com detalhes em laranja. */
+   Escuro (padrão de toda visita, ver lib/tema.ts): preto fosco com detalhes em laranja.
+   Claro (pelo botão): papel areia do portfólio original. */
 :root {
   --bg: #f4f1ea;
   --surface: #ffffff;
@@ -21,27 +22,6 @@
   --on-panel: #f4f1ea;
   --panel-line: transparent;
   color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #121212;
-    --surface: #1a1a1b;
-    --sunken: #161616;
-    --ink: #f1ede6;
-    --muted: #a29e97;
-    --line: #2b2a28;
-    --accent: #ff5500;
-    --accent-ink: #ff7a3d;
-    --on-accent: #111113;
-    --steel: #6f6b65;
-    --good: #4cc08f;
-    --warn: #e6a64a;
-    --grid: rgba(255, 85, 0, 0.07);
-    --panel: #0b0b0c;
-    --on-panel: #f1ede6;
-    --panel-line: rgba(255, 85, 0, 0.45);
-    color-scheme: dark;
-  }
 }
 :root[data-theme="dark"] {
   --bg: #121212;

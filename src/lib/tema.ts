@@ -1,39 +1,37 @@
 import { useSyncExternalStore } from 'react'
 
-// Tema do site. Sem escolha salva, segue o celular; ao tocar no botão,
-// a escolha (claro ou escuro) fica guardada neste navegador.
+// Tema do site. Toda visita começa no escuro, independente do tema do celular.
+// O botão troca o tema, e a escolha vale só até fechar a aba (sessionStorage):
+// a próxima visita volta a abrir no escuro. O index.html já sai com data-theme="dark",
+// para a tela clara não piscar antes do JavaScript carregar.
 export type Tema = 'claro' | 'escuro'
 
-const consulta = () => window.matchMedia('(prefers-color-scheme: dark)')
 const ouvintes = new Set<() => void>()
 
-function lerSalvo(): Tema | null {
+function lerSessao(): Tema | null {
   try {
-    const t = localStorage.getItem('tema')
+    // Versões anteriores guardavam a escolha para sempre; não vale mais.
+    localStorage.removeItem('tema')
+    const t = sessionStorage.getItem('tema')
     return t === 'claro' || t === 'escuro' ? t : null
   } catch {
     return null
   }
 }
 
-let escolhido: Tema | null = typeof window === 'undefined' ? null : lerSalvo()
+let atual: Tema = (typeof window !== 'undefined' && lerSessao()) || 'escuro'
 
 function aplicar() {
   const raiz = document.documentElement
-  if (escolhido) raiz.dataset.theme = escolhido === 'escuro' ? 'dark' : 'light'
-  else delete raiz.dataset.theme
+  raiz.dataset.theme = atual === 'escuro' ? 'dark' : 'light'
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', atual === 'escuro' ? '#121212' : '#f4f1ea')
 }
-if (typeof window !== 'undefined') {
-  aplicar()
-  consulta().addEventListener('change', () => ouvintes.forEach((f) => f()))
-}
-
-const efetivo = (): Tema => escolhido ?? (consulta().matches ? 'escuro' : 'claro')
+if (typeof window !== 'undefined') aplicar()
 
 export function definirTema(t: Tema) {
-  escolhido = t
+  atual = t
   try {
-    localStorage.setItem('tema', t)
+    sessionStorage.setItem('tema', t)
   } catch {
     /* armazenamento indisponível */
   }
@@ -47,7 +45,7 @@ export function useTema(): Tema {
       ouvintes.add(f)
       return () => ouvintes.delete(f)
     },
-    efetivo,
-    () => 'claro',
+    () => atual,
+    () => 'escuro',
   )
 }
