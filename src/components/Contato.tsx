@@ -32,7 +32,7 @@ export function Contato() {
           <a
             href={vcardUrl}
             download
-            className="flex min-h-13 items-center justify-center gap-2 rounded-xl bg-accent px-4 font-semibold text-on-accent"
+            className="ripple flex min-h-13 items-center justify-center gap-2 rounded-xl bg-accent px-4 font-semibold text-on-accent transition active:scale-[0.98]"
           >
             <UserPlus aria-hidden size={20} />
             Salvar meu contato
@@ -46,7 +46,7 @@ export function Contato() {
                 key={rotulo}
                 href={href}
                 {...(externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                className="flex min-h-12 items-center justify-center gap-2 rounded-xl border font-medium"
+                className="ripple flex min-h-12 items-center justify-center gap-2 rounded-xl border font-medium transition active:scale-[0.97]"
                 style={{ borderColor: 'color-mix(in oklab, var(--on-panel) 35%, transparent)' }}
               >
                 <Icone aria-hidden size={18} />

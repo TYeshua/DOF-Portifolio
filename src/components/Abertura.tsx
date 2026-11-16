@@ -128,27 +128,30 @@ export function Abertura({ aoRevelar, aoFim }: { aoRevelar: () => void; aoFim: (
           paddingRight: 'max(20px, env(safe-area-inset-right, 0px))',
         }}
       >
-        <div className="flex items-center justify-between font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#a29e97]">
+        <div className="flex items-center justify-between font-mono text-[0.7rem] uppercase tracking-[0.16em] text-[#a29e97]">
           <span className="flex items-center gap-2">
             <span className="size-1.5 animate-pulse rounded-full bg-[#ff5500]" />
             Poço TY-01 · gêmeo digital
           </span>
+          {/* Área de toque de 44px; o contorno visível continua discreto */}
           <button
             type="button"
             onClick={() => encerrar.current()}
-            className="pointer-events-auto rounded-full border border-white/15 px-3 py-1.5 tracking-[0.12em] text-[#f1ede6] transition hover:bg-white/10"
+            className="group pointer-events-auto -my-2 -mr-2 grid min-h-11 place-items-center px-2 text-[0.75rem] tracking-[0.12em] text-[#f1ede6]"
           >
-            Pular
+            <span className="rounded-full border border-white/15 px-3.5 py-1.5 transition group-hover:bg-white/10 group-active:scale-95 group-active:bg-white/10">Pular</span>
           </button>
         </div>
 
         <div className="mx-auto flex w-full max-w-[440px] flex-col gap-5">
           <div className="a-item flex flex-col gap-2" style={{ ['--i' as string]: 0 }}>
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[#ff7a3d]">Digital Oilfield</span>
-            <h1 className="display text-[2.9rem] leading-[0.95] text-[#f1ede6]">
+            {/* O h1 da página é o do topo; aqui o nome é só a tela de carregamento */}
+            <p className="display text-[2.9rem] leading-[0.95] text-[#f1ede6]">
               Thiago <em className="text-[#ff7a3d]">Yeshua</em>
-            </h1>
-            <p className="text-[0.95rem] text-[#a29e97]">Engenharia de Petróleo · Software · Dados</p>
+            </p>
+            <p className="text-[0.95rem] text-[#a29e97]">
+              <span className="text-[#ff7a3d]">Digital Oilfield</span> · Petróleo, software e dados
+            </p>
           </div>
 
           <dl className="a-item grid grid-cols-3 border-y border-white/10 font-mono" style={{ ['--i' as string]: 1 }}>
@@ -158,7 +161,7 @@ export function Abertura({ aoRevelar, aoFim }: { aoRevelar: () => void; aoFim: (
               { rotulo: 'Taxa (ROP)', ref: rop, un: 'm/h' },
             ].map((x, i) => (
               <div key={x.rotulo} className={`flex flex-col gap-1 py-3 ${i ? 'border-l border-white/10 pl-3' : 'pr-3'}`}>
-                <dt className="text-[0.62rem] uppercase tracking-[0.14em] text-[#a29e97]">{x.rotulo}</dt>
+                <dt className="text-[0.7rem] uppercase tracking-[0.1em] text-[#a29e97]">{x.rotulo}</dt>
                 <dd className="tabular text-[1.05rem] text-[#f1ede6]">
                   <span ref={x.ref}>0</span> <span className="text-[0.7rem] text-[#a29e97]">{x.un}</span>
                 </dd>

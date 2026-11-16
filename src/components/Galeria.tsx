@@ -132,19 +132,18 @@ export function Galeria({ titulo, telas, ativo = true, altura = 214 }: { titulo:
       </button>
       <p key={atual} className="legenda min-h-[2.6em] text-[0.8rem] leading-snug text-muted">{telas[atual].legenda}</p>
       {telas.length > 1 && (
-        <div className="flex gap-2" role="tablist" aria-label={`Telas do ${titulo}`}>
+        <div className="flex gap-2" role="group" aria-label={`Telas do ${titulo}`}>
           {telas.map((t, i) => (
             <button
               key={t.arquivo}
               type="button"
-              role="tab"
-              aria-selected={i === atual}
+              aria-current={i === atual ? 'true' : undefined}
               aria-label={t.legenda}
               onClick={() => {
                 setTocou(true)
                 setAtual(i)
               }}
-              className={`miniatura relative h-11 flex-1 overflow-hidden rounded-lg border transition-all duration-300 ${i === atual ? 'border-accent' : 'border-line opacity-60 hover:opacity-100'}`}
+              className={`miniatura relative h-11 flex-1 overflow-hidden rounded-lg border transition-[opacity,border-color,scale] duration-300 active:scale-[0.96] ${i === atual ? 'border-accent' : 'border-line opacity-60 hover:opacity-100'}`}
             >
               <img src={url(`${t.arquivo}-p`)} alt="" loading="lazy" className="size-full object-cover object-top" />
               {i === atual && auto && (
@@ -183,8 +182,16 @@ export function Galeria({ titulo, telas, ativo = true, altura = 214 }: { titulo:
 
 function Visor({ titulo, telas, inicio, aoFechar }: { titulo: string; telas: Tela[]; inicio: number; aoFechar: (i: number) => void }) {
   const trilho = useRef<HTMLDivElement>(null)
+  const fecharRef = useRef<HTMLButtonElement>(null)
   const [atual, setAtual] = useState(inicio)
   const [nomeAtivo, setNomeAtivo] = useState(true)
+
+  // Foco entra no visor ao abrir e volta para quem o abriu ao fechar
+  useEffect(() => {
+    const anterior = document.activeElement as HTMLElement | null
+    fecharRef.current?.focus({ preventScroll: true })
+    return () => anterior?.focus({ preventScroll: true })
+  }, [])
 
   useLayoutEffect(() => {
     const el = trilho.current
@@ -217,13 +224,17 @@ function Visor({ titulo, telas, inicio, aoFechar }: { titulo: string; telas: Tel
   )
 
   useEffect(() => {
+    // Na captura, antes da folha por trás: Esc fecha só o visor, não os dois
     const tecla = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') fechar()
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        fechar()
+      }
       if (e.key === 'ArrowRight') ir(1)
       if (e.key === 'ArrowLeft') ir(-1)
     }
-    window.addEventListener('keydown', tecla)
-    return () => window.removeEventListener('keydown', tecla)
+    window.addEventListener('keydown', tecla, true)
+    return () => window.removeEventListener('keydown', tecla, true)
   }, [fechar, ir])
 
   return (
@@ -244,7 +255,7 @@ function Visor({ titulo, telas, inicio, aoFechar }: { titulo: string; telas: Tel
         <p className="min-w-0 truncate text-[0.95rem] font-semibold">
           {titulo} <span className="tabular ml-1 font-mono text-[0.8rem] opacity-60">{atual + 1}/{telas.length}</span>
         </p>
-        <button type="button" onClick={fechar} className="grid size-11 place-items-center rounded-full bg-on-panel/10" aria-label="Fechar">
+        <button ref={fecharRef} type="button" onClick={fechar} className="grid size-11 place-items-center rounded-full bg-on-panel/10 transition active:scale-95" aria-label="Fechar">
           <X size={20} />
         </button>
       </div>
@@ -257,7 +268,7 @@ function Visor({ titulo, telas, inicio, aoFechar }: { titulo: string; telas: Tel
         onClick={(e) => {
           if (e.target === e.currentTarget) fechar()
         }}
-        className="flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {telas.map((t, i) => (
           <figure
@@ -288,7 +299,7 @@ function Visor({ titulo, telas, inicio, aoFechar }: { titulo: string; telas: Tel
           </button>
           <div className="flex gap-1.5" aria-hidden>
             {telas.map((t, i) => (
-              <span key={t.arquivo} className={`h-1.5 rounded-full transition-all duration-300 ${i === atual ? 'w-5 bg-accent' : 'w-1.5 bg-on-panel/30'}`} />
+              <span key={t.arquivo} className={`h-1.5 rounded-full transition-[width,background-color] duration-300 ${i === atual ? 'w-5 bg-accent' : 'w-1.5 bg-on-panel/30'}`} />
             ))}
           </div>
           <button type="button" onClick={() => ir(1)} disabled={atual === telas.length - 1} className="grid size-11 place-items-center rounded-full bg-on-panel/10 disabled:opacity-30" aria-label="Próxima tela">

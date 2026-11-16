@@ -3,6 +3,7 @@ import foto from '../assets/foto.webp'
 import { destaques, perfil } from '../data'
 import { vcardUrl } from '../lib/contato'
 import { abrirGaveta } from './Navegacao'
+import { Disponibilidade } from './ui'
 
 // Retrato 4:5 com marcas de canto, como uma figura numa folha técnica
 function Retrato() {
@@ -16,6 +17,7 @@ function Retrato() {
         alt={`Foto de ${perfil.nome}`}
         width={148}
         height={185}
+        fetchPriority="high"
         className="block aspect-4/5 w-full rounded-[10px] bg-sunken object-cover shadow-[0_14px_28px_-18px_rgba(0,0,0,.6)]"
       />
     </div>
@@ -91,16 +93,14 @@ export function Hero() {
         {perfil.vinculos.map((v) => (
           <li key={v} className="flex gap-2.5">
             <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 rounded-full bg-accent" />
-            <span>{v}</span>
+            {/* O "·" fica preso à palavra anterior: a linha de baixo nunca começa pelo separador */}
+            <span>{v.replaceAll(' · ', ' · ')}</span>
           </li>
         ))}
       </ul>
 
       <div className="entra flex flex-col gap-2" style={{ ['--i' as string]: 4 }}>
-        <p className="mb-1 inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm">
-          <span aria-hidden className="size-2 rounded-full bg-good" />
-          {perfil.disponibilidade}
-        </p>
+        <Disponibilidade texto={perfil.disponibilidade} className="mb-1" />
         <a
           id="cta-contato"
           href={vcardUrl}
@@ -113,7 +113,7 @@ export function Hero() {
         <button
           type="button"
           onClick={abrirGaveta}
-          className="group flex min-h-11 w-fit items-center gap-1 self-center text-[0.92rem] font-medium text-muted transition-colors hover:text-ink"
+          className="group flex min-h-11 w-fit items-center gap-1 self-center text-[0.92rem] font-medium text-muted transition-[color,transform] hover:text-ink active:scale-[0.97] active:text-ink"
         >
           WhatsApp, e-mail, LinkedIn e Lattes
           <ChevronRight aria-hidden size={17} className="transition-transform group-hover:translate-x-0.5" />

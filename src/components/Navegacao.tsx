@@ -5,7 +5,7 @@ import { perfil } from '../data'
 import fotoP from '../assets/foto-p.webp'
 import { mailtoUrl, vcardUrl, whatsappUrl } from '../lib/contato'
 import { definirTema, useTema } from '../lib/tema'
-import { BotaoCompartilhar, BotaoCopiar } from './ui'
+import { BotaoCompartilhar, BotaoCopiar, Disponibilidade } from './ui'
 
 export const SECOES = [
   { id: 'pesquisa', rotulo: 'Pesquisa e bolsas' },
@@ -121,7 +121,7 @@ export function Navegacao() {
             <img src={fotoP} alt="" width={34} height={34} className="size-[34px] shrink-0 rounded-full border border-line object-cover" />
             <span className="flex min-w-0 flex-col leading-tight">
               <span className="display truncate text-[0.98rem]">{perfil.nome}</span>
-              <span className="truncate font-mono text-[0.68rem] text-muted">Petróleo · UFPA</span>
+              <span className="truncate font-mono text-[0.72rem] text-muted">Petróleo · UFPA</span>
             </span>
           </a>
           <div className="flex shrink-0 items-center gap-2">
@@ -162,7 +162,7 @@ function LinhaContato({ Icone, rotulo, valor, href, externo }: { Icone: typeof M
           <span className="truncate font-mono text-[0.86rem]">{valor}</span>
         </span>
       </a>
-      <BotaoCopiar texto={valor} rotulo={rotulo} />
+      <BotaoCopiar texto={valor} rotulo={rotulo} compacto />
     </li>
   )
 }
@@ -197,7 +197,7 @@ function Gaveta({ aberta, ativa, aoFechar }: { aberta: boolean; ativa: string; a
         role="dialog"
         aria-modal="true"
         aria-label="Contato e navegação"
-        className="gaveta-painel absolute inset-y-0 right-0 flex w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-line bg-bg shadow-[-20px_0_40px_-24px_rgba(0,0,0,.5)]"
+        className="gaveta-painel absolute inset-y-0 right-0 flex w-[min(88vw,360px)] flex-col overflow-y-auto overscroll-contain border-l border-line bg-bg shadow-[-20px_0_40px_-24px_rgba(0,0,0,.5)]"
         style={{
           paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)',
           paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)',
@@ -213,20 +213,19 @@ function Gaveta({ aberta, ativa, aoFechar }: { aberta: boolean; ativa: string; a
               <span className="text-[0.82rem] text-muted">Eng. de Exploração e Produção de Petróleo · UFPA</span>
             </div>
           </div>
-          <button ref={fecharRef} type="button" onClick={aoFechar} aria-label="Fechar" className="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-surface">
+          <button ref={fecharRef} type="button" onClick={aoFechar} aria-label="Fechar" className="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-surface transition active:scale-95">
             <X size={18} />
           </button>
         </div>
 
-        <p className="g-item mt-4 inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-[0.82rem]" style={{ ['--i' as string]: 1 }}>
-          <span aria-hidden className="size-2 rounded-full bg-good" />
-          {perfil.disponibilidade}
-        </p>
+        <div className="g-item mt-4" style={{ ['--i' as string]: 1 }}>
+          <Disponibilidade texto={perfil.disponibilidade} />
+        </div>
 
         <a
           href={vcardUrl}
           download
-          className="g-item mt-4 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-accent font-semibold text-on-accent active:scale-[0.98]"
+          className="ripple g-item mt-4 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-accent font-semibold text-on-accent active:scale-[0.98]"
           style={{ ['--i' as string]: 2 }}
         >
           <UserPlus aria-hidden size={19} />
@@ -323,7 +322,7 @@ export function BarraContato() {
   return (
     <div
       aria-hidden={!visivel}
-      className={`fixed inset-x-0 z-40 flex justify-center transition-all duration-300 ${visivel ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'}`}
+      className={`fixed inset-x-0 z-40 flex justify-center transition-[opacity,translate] duration-300 ease-(--ease-saida) ${visivel ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'}`}
       style={{
         bottom: 'calc(14px + env(safe-area-inset-bottom, 0px))',
         paddingLeft: 'max(16px, env(safe-area-inset-left, 0px))',
@@ -335,7 +334,7 @@ export function BarraContato() {
           href={vcardUrl}
           download
           tabIndex={visivel ? 0 : -1}
-          className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-accent font-semibold text-on-accent"
+          className="ripple flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-accent font-semibold text-on-accent transition active:scale-[0.98]"
         >
           <UserPlus aria-hidden size={19} />
           Salvar contato
@@ -346,7 +345,7 @@ export function BarraContato() {
           rel="noopener noreferrer"
           tabIndex={visivel ? 0 : -1}
           aria-label="Conversar no WhatsApp"
-          className="grid min-h-12 w-14 place-items-center rounded-xl border border-line"
+          className="ripple grid min-h-12 w-14 place-items-center rounded-xl border border-line transition active:scale-95"
         >
           <MessageCircle aria-hidden size={20} />
         </a>

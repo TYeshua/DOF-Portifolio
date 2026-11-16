@@ -125,7 +125,9 @@ export function BotaoCompartilhar({ className = '' }: { className?: string }) {
   )
 }
 
-export function BotaoCopiar({ texto, rotulo }: { texto: string; rotulo: string }) {
+// compacto: só o ícone (o valor ao lado precisa do espaço); o aviso "Copiado" continua
+// sendo lido pelo leitor de tela.
+export function BotaoCopiar({ texto, rotulo, compacto = false }: { texto: string; rotulo: string; compacto?: boolean }) {
   const [ok, setOk] = useState(false)
   return (
     <button
@@ -136,11 +138,32 @@ export function BotaoCopiar({ texto, rotulo }: { texto: string; rotulo: string }
           setTimeout(() => setOk(false), 2000)
         }
       }}
-      className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg px-3 text-sm font-medium text-current opacity-80 transition hover:opacity-100"
+      className={`inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-lg text-sm font-medium text-current transition active:scale-95 ${
+        compacto ? 'min-w-11' : 'px-3'
+      } ${ok ? 'opacity-100' : 'opacity-80 hover:opacity-100'}`}
       aria-label={`Copiar ${rotulo}`}
     >
-      {ok ? <Check aria-hidden size={16} /> : <Copy aria-hidden size={16} />}
-      <span aria-live="polite">{ok ? 'Copiado' : 'Copiar'}</span>
+      <span key={String(ok)} className={`grid place-items-center ${ok ? 'giro' : ''}`}>
+        {ok ? <Check aria-hidden size={16} /> : <Copy aria-hidden size={16} />}
+      </span>
+      <span aria-live="polite" className={compacto ? 'sr-only' : undefined}>
+        {ok ? 'Copiado' : compacto ? '' : 'Copiar'}
+      </span>
     </button>
+  )
+}
+
+// Disponibilidade em duas linhas: o essencial em destaque e as condições logo abaixo.
+// Numa pílula de uma linha só o texto quebrava torto na coluna estreita.
+export function Disponibilidade({ texto, className = '' }: { texto: string; className?: string }) {
+  const [principal, ...resto] = texto.split(' · ')
+  return (
+    <p className={`flex w-fit items-start gap-2.5 rounded-xl border border-line bg-surface py-2 pl-3 pr-3.5 text-[0.88rem] leading-snug ${className}`}>
+      <span aria-hidden className="mt-[0.45em] size-2 shrink-0 rounded-full bg-good" />
+      <span className="flex flex-col">
+        <span className="font-medium">{principal}</span>
+        {resto.length > 0 && <span className="text-[0.82rem] text-muted">{resto.join(' · ')}</span>}
+      </span>
+    </p>
   )
 }

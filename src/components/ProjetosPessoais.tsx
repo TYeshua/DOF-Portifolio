@@ -34,7 +34,7 @@ function Cartao({ p, aoAbrir }: { p: ProjetoPessoal; aoAbrir: () => void }) {
     >
       <span className="relative flex h-[156px] items-center justify-center overflow-hidden rounded-2xl bg-sunken p-3">
         <Miniatura tela={p.telas[0]} altura={128} />
-        <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-panel/80 px-2 py-0.5 font-mono text-[0.66rem] text-on-panel backdrop-blur">
+        <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-panel/80 px-2 py-0.5 font-mono text-[0.7rem] text-on-panel backdrop-blur">
           <Images aria-hidden size={12} />
           {p.telas.length}
         </span>
@@ -79,7 +79,7 @@ function Detalhes({ p, aberto }: { p: ProjetoPessoal; aberto: boolean }) {
       )}
 
       <div className="flex flex-col gap-2.5">
-        <h4 className="text-[0.95rem] font-semibold">O que o projeto faz</h4>
+        <h3 className="text-[0.95rem] font-semibold">O que o projeto faz</h3>
         <ul className="flex flex-col gap-2 text-[0.92rem]">
           {p.pontos.map((t) => (
             <li key={t} className="flex gap-2.5">
@@ -120,18 +120,15 @@ export function ProjetosPessoais() {
     let quadro = 0
     const atualizar = () => {
       quadro = 0
+      const itens = Array.from(el.children) as HTMLElement[]
+      // Lê todas as medidas antes de escrever qualquer estilo, para não forçar o layout a cada cartão
       const centro = el.scrollLeft + el.clientWidth / 2
+      const ds = itens.map((h) => (h.offsetLeft + h.offsetWidth / 2 - centro) / h.offsetWidth)
       let melhor = 0
-      let menor = Infinity
-      Array.from(el.children).forEach((c, i) => {
-        const h = c as HTMLElement
-        const d = (h.offsetLeft + h.offsetWidth / 2 - centro) / h.offsetWidth
-        h.style.setProperty('--ad', Math.min(1, Math.abs(d)).toFixed(3))
-        h.style.setProperty('--d', Math.max(-1, Math.min(1, d)).toFixed(3))
-        if (Math.abs(d) < menor) {
-          menor = Math.abs(d)
-          melhor = i
-        }
+      ds.forEach((d, i) => {
+        itens[i].style.setProperty('--ad', Math.min(1, Math.abs(d)).toFixed(3))
+        itens[i].style.setProperty('--d', Math.max(-1, Math.min(1, d)).toFixed(3))
+        if (Math.abs(d) < Math.abs(ds[melhor])) melhor = i
       })
       setAtual(melhor)
     }
@@ -183,13 +180,12 @@ export function ProjetosPessoais() {
         Feitos fora das bolsas, para aprender e testar ideias de Digital Oilfield. Deslize para o lado e toque num projeto para ver os detalhes.
       </p>
 
-      <div ref={chips} className="relative -mx-4 flex gap-1 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="tablist" aria-label="Projetos">
+      <div ref={chips} className="relative -mx-4 flex gap-1 overflow-x-auto overscroll-x-contain px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="group" aria-label="Ir para o projeto">
         {projetosPessoais.map((q, i) => (
           <button
             key={q.id}
             type="button"
-            role="tab"
-            aria-selected={atual === i}
+            aria-current={atual === i ? 'true' : undefined}
             onClick={() => ir(i)}
             className={`relative z-[1] shrink-0 rounded-full px-3.5 py-2 text-[0.84rem] font-medium transition-colors duration-300 ${atual === i ? 'text-bg' : 'text-muted hover:text-ink'}`}
           >
@@ -201,7 +197,7 @@ export function ProjetosPessoais() {
 
       <div
         ref={trilho}
-        className="carrossel -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-[7%] pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="carrossel -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-[7%] pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         aria-roledescription="carrossel"
         aria-label="Projetos pessoais"
       >

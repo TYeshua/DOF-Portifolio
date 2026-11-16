@@ -43,14 +43,14 @@ function usePilha(n: number) {
     let quadro = 0
     const atualizar = () => {
       quadro = 0
+      // Lê todas as posições antes de escrever, para não forçar o layout a cada cartão
+      const rs = refs.current.map((el) => el?.getBoundingClientRect())
       for (let i = 0; i < n - 1; i++) {
-        const a = refs.current[i]
-        const b = refs.current[i + 1]
-        if (!a || !b) continue
-        const ra = a.getBoundingClientRect()
-        const rb = b.getBoundingClientRect()
+        const ra = rs[i]
+        const rb = rs[i + 1]
+        if (!ra || !rb) continue
         const cobre = Math.min(1, Math.max(0, (ra.bottom - rb.top) / ra.height))
-        a.style.setProperty('--cobre', cobre.toFixed(3))
+        refs.current[i]!.style.setProperty('--cobre', cobre.toFixed(3))
       }
     }
     const aoRolar = () => {
@@ -129,7 +129,7 @@ export function Projetos() {
       <Folha aberta={demo !== null} titulo={demo ? TITULO_DEMO[demo] : ''} aoFechar={fechar}>
         <p className="mb-5 flex gap-2.5 rounded-xl bg-sunken px-3.5 py-3 text-[0.85rem] leading-snug">
           <Info aria-hidden size={17} className="mt-px shrink-0 text-accent-ink" />
-          <span className="justo">
+          <span>
             <strong className="font-semibold">Isto é só uma amostra.</strong> Um exemplo simplificado para mostrar a ideia do projeto, com cálculos
             básicos. Não é o produto final e não usa o código nem os dados da pesquisa.
           </span>

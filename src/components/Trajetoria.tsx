@@ -108,7 +108,7 @@ export function Trajetoria() {
       <div>
         {/* Linha do tempo com marcador que avança */}
         <div aria-hidden className="mb-4 flex flex-col gap-1.5">
-          <div className="flex justify-between font-mono text-[0.66rem] text-muted">
+          <div className="flex justify-between font-mono text-[0.7rem] text-muted">
             <span>2022</span>
             <span>2027</span>
           </div>
